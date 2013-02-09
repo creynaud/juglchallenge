@@ -25,7 +25,7 @@ object Application extends Controller {
   }
 
   def getMarkdown = Action {
-    val source = Source.fromFile("/tmp/markdown")
+    val source = Source.fromFile("/tmp/markdown")(io.Codec("UTF-8"))
     val lines = source.mkString
     source.close()
     Ok(lines)
