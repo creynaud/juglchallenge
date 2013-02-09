@@ -20,7 +20,17 @@ class ApplicationSpec extends Specification {
 
         status(home) must equalTo(OK)
         contentType(home) must beSome.which(_ == "text/plain")
-        contentAsString(home) must contain ("claire12.reynaud@laposte.net")
+        contentAsString(home) must equalTo("claire12.reynaud@laposte.net")
+      }
+    }
+
+    "return OUI for /?q=Es+tu+abonne+a+la+mailing+list(OUI/NON)" in {
+      running(FakeApplication()) {
+        val home = route(FakeRequest(GET, "/?q=Es+tu+abonne+a+la+mailing+list(OUI/NON)")).get
+
+        status(home) must equalTo(OK)
+        contentType(home) must beSome.which(_ == "text/plain")
+        contentAsString(home) must equalTo("OUI")
       }
     }
   }
