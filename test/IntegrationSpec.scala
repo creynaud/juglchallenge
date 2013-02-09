@@ -23,6 +23,10 @@ class IntegrationSpec extends Specification {
         browser.goTo("http://localhost:3333/?q=Es+tu+abonne+a+la+mailing+list(OUI/NON)")
 
         browser.pageSource must contain("OUI")
+
+        browser.goTo("http://localhost:3333/?q=Es+tu+heureux+de+participer(OUI/NON)")
+
+        browser.pageSource must contain("OUI")
       }
     }
     

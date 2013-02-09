@@ -33,5 +33,15 @@ class ApplicationSpec extends Specification {
         contentAsString(home) must equalTo("OUI")
       }
     }
+
+    "return OUI for /?q=Es+tu+heureux+de+participer(OUI/NON)" in {
+      running(FakeApplication()) {
+        val home = route(FakeRequest(GET, "/?q=Es+tu+heureux+de+participer(OUI/NON)")).get
+
+        status(home) must equalTo(OK)
+        contentType(home) must beSome.which(_ == "text/plain")
+        contentAsString(home) must equalTo("OUI")
+      }
+    }
   }
 }
