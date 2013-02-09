@@ -4,6 +4,6 @@
 
 # Home page
 GET     /                           controllers.Application.email(q: Option[String])
-POST    /                           controllers.Application.markdown
-GET     /markdown                   controllers.Application.getMarkdown
+POST    /enonce/1                   controllers.Application.markdown
+GET     /enonce                     controllers.Application.getMarkdown
 
