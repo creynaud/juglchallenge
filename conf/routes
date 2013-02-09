@@ -4,4 +4,6 @@
 
 # Home page
 GET     /                           controllers.Application.email(q: Option[String])
+POST    /                           controllers.Application.markdown
+GET     /markdown                   controllers.Application.getMarkdown
 
