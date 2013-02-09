@@ -16,15 +16,7 @@ class IntegrationSpec extends Specification {
     "work from within a browser" in {
       running(TestServer(3333), HTMLUNIT) { browser =>
 
-        browser.goTo("http://localhost:3333/?q=Quelle+est+ton+adresse+email")
-
-        browser.pageSource must contain("claire12.reynaud@laposte.net")
-
-        browser.goTo("http://localhost:3333/?q=Es+tu+abonne+a+la+mailing+list(OUI/NON)")
-
-        browser.pageSource must contain("OUI")
-
-        browser.goTo("http://localhost:3333/?q=Es+tu+heureux+de+participer(OUI/NON)")
+        browser.goTo("http://localhost:3333/?q=As+tu+bien+recu+le+premier+enonce(OUI/NON)")
 
         browser.pageSource must contain("OUI")
       }

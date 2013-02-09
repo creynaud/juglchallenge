@@ -29,4 +29,21 @@ object Application extends Controller {
     Ok(lines)
   }
 
+  def resolve = Action {
+    request =>
+      val body: AnyContent = request.body
+      val textBody: Option[String] = body.asText
+      // Expecting text body
+      textBody.map {
+        text =>
+          println(text)
+          val solver: MineSweeperSolver = MineSweeperSolver.parse(text)
+          val solution: String = solver.solution()
+          println(solution)
+          Ok(solution)
+      }.getOrElse {
+        BadRequest("Expecting text/plain request body")
+      }
+  }
+
 }
