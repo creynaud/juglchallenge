@@ -52,9 +52,6 @@ object Application extends Controller {
 
   def solveDiet = Action(parse.json) {
     request =>
-      val writer = new FileWriter(new File("/tmp/activities"))
-      writer.write(request.body.toString())
-      writer.close()
       val result: JsResult[List[Activity]] = request.body.validate[List[Activity]]
       val solver: DietSolver = new DietSolver(result.get)
       val solution: Set[Activity] = solver.solution()
