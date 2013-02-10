@@ -50,7 +50,7 @@ class ApplicationSpec extends Specification {
 
         status(solver) must equalTo(OK)
         contentType(solver) must beSome.which(_ == "application/json")
-        contentAsString(solver) must contain("no solution")
+        contentAsString(solver) must equalTo("[\"no solution\"]")
       }
     }
   }
