@@ -18,16 +18,11 @@ class DietSolver(activities: List[Activity]) {
     val solution: mutable.Map[(Int, Int), ListBuffer[Int]] = mutable.Map[(Int, Int), ListBuffer[Int]]()
     solve(n, p, activities.length -1, 0, solution)
     val solutionIndexesList: Option[ListBuffer[Int]] = solution.get(activities.length - 1, 0)
-    solutionIndexesList match {
-      case Some(_) => {
-        val result: mutable.Set[Activity] = mutable.Set[Activity]()
-        for (index <- solutionIndexesList.get) {
-          result += activities(index)
-        }
-        return result.toSet
-      }
-      case _ => return Set()
+    val result: mutable.Set[Activity] = mutable.Set[Activity]()
+    for (index <- solutionIndexesList.get) {
+      result += activities(index)
     }
+    return result.toSet
   }
 
   override def toString(): String = {
@@ -55,38 +50,26 @@ class DietSolver(activities: List[Activity]) {
     } else {
       val existingSolutionOption: Option[ListBuffer[Int]] = solution.get((index - 1, sum))
       existingSolutionOption match {
-        case Some(_) =>
-        case _ => solve(n, p, index - 1, sum, solution)
+        case None => solve(n, p, index - 1, sum, solution)
+        case _ =>
       }
       val otherExistingSolutionOption: Option[ListBuffer[Int]] = solution.get((index - 1, sum - activities(index).value))
       otherExistingSolutionOption match {
-        case Some(_) =>
-        case _ => solve(n, p, index - 1, sum - activities(index).value, solution)
+        case None => solve(n, p, index - 1, sum - activities(index).value, solution)
+        case _ =>
       }
 
-      val solutionOption: Option[ListBuffer[Int]] = solution.get((index - 1, sum))
-      solutionOption match {
-        case Some(_) => {
-          val solutionForIndexMinus1: ListBuffer[Int] = solution.get((index - 1, sum)).get
-          if (solutionForIndexMinus1.length > 0) {
-            solution.put((index, sum), solutionForIndexMinus1)
-          }
-        }
-        case _ =>
+      val solutionForIndexMinus1: ListBuffer[Int] = solution.get((index - 1, sum)).get
+      if (solutionForIndexMinus1.length > 0) {
+        solution.put((index, sum), solutionForIndexMinus1)
       }
       if (activities(index).value == sum) {
         solution.put((index, sum), ListBuffer[Int](index))
       }
-      val otherSolutionOption: Option[ListBuffer[Int]] = solution.get((index - 1, sum - activities(index).value))
-      otherSolutionOption match {
-        case Some(_) => {
-          val solutionForIndexMinus1: ListBuffer[Int] = solution.get((index - 1, sum - activities(index).value)).get
-          if (solutionForIndexMinus1.length > 0) {
-            solutionForIndexMinus1 += index
-            solution.put((index, sum), solutionForIndexMinus1)
-          }
-        }
-        case _ =>
+      val solutionForIndexMinus1SumMinusValue: ListBuffer[Int] = solution.get((index - 1, sum - activities(index).value)).get
+      if (solutionForIndexMinus1SumMinusValue.length > 0) {
+        solutionForIndexMinus1SumMinusValue += index
+        solution.put((index, sum), solutionForIndexMinus1SumMinusValue)
       }
     }
   }
