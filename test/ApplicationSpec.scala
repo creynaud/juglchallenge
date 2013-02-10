@@ -4,6 +4,7 @@ import org.specs2.mutable._
 
 import play.api.test._
 import play.api.test.Helpers._
+import play.api.libs.json.{JsValue, Json}
 
 /**
  * Tests for the application.
@@ -27,6 +28,20 @@ class ApplicationSpec extends Specification {
         status(solver) must equalTo(OK)
         contentType(solver) must beSome.which(_ == "text/plain")
         contentAsString(solver) must equalTo("*100\n2210\n1*10\n1110")
+      }
+    }
+    "solve the diet on POST /diet/resolve" in {
+      running(FakeApplication()) {
+        val json: String = "[{ \"name\" : \"coca-light\", \"value\" : 1 },{ \"name\" : \"croissant\", \"value\" : 180 },{ \"name\" : \"au-travail-a-velo\", \"value\" : -113 },{ \"name\" : \"guitar-hero\", \"value\" : -181 }]"
+        val solver = route(FakeRequest(POST, "/diet/resolve").withJsonBody(Json.parse(json))).get
+
+        println(contentAsString(solver))
+        status(solver) must equalTo(OK)
+        contentType(solver) must beSome.which(_ == "application/json")
+        contentAsString(solver) must contain("croissant")
+        contentAsString(solver) must contain("coca-light")
+        contentAsString(solver) must contain("guitar-hero")
+        contentAsString(solver) must not contain("au-travail-a-velo")
       }
     }
   }

@@ -1,4 +1,4 @@
-package controllers
+package model
 
 import collection.mutable._
 

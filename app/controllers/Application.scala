@@ -3,6 +3,10 @@ package controllers
 import play.api.mvc._
 import java.io._
 import io.Source
+import play.api._
+import model.{DietSolver, Activity, MineSweeperSolver}
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 object Application extends Controller {
 
@@ -29,19 +33,31 @@ object Application extends Controller {
     Ok(lines)
   }
 
-  def resolve = Action {
+  def solveMineSweeper = Action(parse.text) {
     request =>
-      val body: AnyContent = request.body
-      val textBody: Option[String] = body.asText
-      // Expecting text body
-      textBody.map {
-        text =>
-          val solver: MineSweeperSolver = MineSweeperSolver.parse(text)
-          val solution: String = solver.solution()
-          Ok(solution)
-      }.getOrElse {
-        BadRequest("Expecting text/plain request body")
-      }
+      val solver: MineSweeperSolver = MineSweeperSolver.parse(request.body)
+      val solution: String = solver.solution()
+      Ok(solution)
+  }
+
+  implicit val activityReads = new Reads[Activity] {
+    def reads(js: JsValue): JsSuccess[Activity] = {
+      JsSuccess[Activity](new Activity((js \ "name").as[String], (js \ "value").as[Int]))
+    }
+  }
+
+  implicit val activityWrites = new Writes[Activity] {
+    def writes(activity: Activity): JsValue = {
+      JsString(activity.name)
+    }
+  }
+
+  def solveDiet = Action(parse.json) {
+    request =>
+      val result: JsResult[List[Activity]] = request.body.validate[List[Activity]]
+      val solver: DietSolver = new DietSolver(result.get)
+      val solution: Set[Activity] = solver.solution()
+      Ok(Json.toJson(solution.toList))
   }
 
 }

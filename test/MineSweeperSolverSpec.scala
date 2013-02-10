@@ -2,7 +2,7 @@ package test
 
 import org.specs2.mutable._
 
-import controllers._
+import model.MineSweeperSolver
 
 /**
  * Tests for the mine sweeper game.

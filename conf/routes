@@ -7,5 +7,6 @@ GET     /                           controllers.Application.email(q: Option[Stri
 POST    /enonce/2                   controllers.Application.markdown
 GET     /enonce                     controllers.Application.getMarkdown
 
-POST    /minesweeper/resolve        controllers.Application.resolve
+POST    /minesweeper/resolve        controllers.Application.solveMineSweeper
 
+POST    /diet/resolve               controllers.Application.solveDiet
