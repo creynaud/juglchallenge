@@ -36,7 +36,6 @@ object MineSweeperSolver {
 class MineSweeperSolver(lines: Int, columns: Int, mines: List[(Int, Int)]) {
 
   def solution(): String = {
-    // TODO compute the number of mines by walking the mines and marking +1 in the surrounding spots
     val sb = new StringBuilder()
     for (line <- Range(0, lines)) {
       for (column <- Range(0, columns)) {
