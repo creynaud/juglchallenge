@@ -59,7 +59,7 @@ object Application extends Controller {
       val solver: DietSolver = new DietSolver(result.get)
       val solution: Set[Activity] = solver.solution()
       if (solution.size == 0) {
-        Ok(Json.toJson(Set(new Activity("no solution", 0))))
+        Ok(Json.toJson(Json.arr("no solution")))
       } else {
         Ok(Json.toJson(solution.toList))
       }
