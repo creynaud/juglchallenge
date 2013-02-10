@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.email(q: Option[String])
-POST    /enonce/1                   controllers.Application.markdown
+POST    /enonce/2                   controllers.Application.markdown
 GET     /enonce                     controllers.Application.getMarkdown
 
 POST    /minesweeper/resolve        controllers.Application.resolve
