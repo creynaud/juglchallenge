@@ -6,7 +6,8 @@ object MineSweeperSolver {
   def parse(text: String): MineSweeperSolver = {
     val minesListBuffer = ListBuffer[(Int, Int)]()
     var currentLine: Int = 0
-    var size = 0
+    var lines = 0
+    var columns = 0
     for (line <- text.split("[\\n-\\r]+")) {
       if (line.contains(".") || line.contains("*")) {
         var currentChar: Int = 0
@@ -20,20 +21,25 @@ object MineSweeperSolver {
       } else {
         val sizes = line.split("\\s+")
         for (sizeString <- sizes) {
-          size = sizeString.toInt
+          if (lines > 0) {
+            columns = sizeString.toInt
+          } else {
+            lines = sizeString.toInt
+          }
         }
       }
     }
-    new MineSweeperSolver(size, minesListBuffer.toList)
+    new MineSweeperSolver(lines, columns, minesListBuffer.toList)
   }
 }
 
-class MineSweeperSolver(size: Int, mines: List[(Int, Int)]) {
+class MineSweeperSolver(lines: Int, columns: Int, mines: List[(Int, Int)]) {
 
   def solution(): String = {
+    // TODO compute the number of mines by walking the mines and marking +1 in the surrounding spots
     val sb = new StringBuilder()
-    for (line <- Range(0, size)) {
-      for (column <- Range(0, size)) {
+    for (line <- Range(0, lines)) {
+      for (column <- Range(0, columns)) {
         if (mines.contains((line, column))) {
           sb.append("*")
         } else {
@@ -64,7 +70,7 @@ class MineSweeperSolver(size: Int, mines: List[(Int, Int)]) {
           }
           sb.append(numberOfSurroundingMines)
         }
-        if ((column == size - 1) && (line != size - 1)) {
+        if ((column == columns - 1) && (line != lines - 1)) {
           sb.append("\n")
         }
       }
@@ -74,18 +80,18 @@ class MineSweeperSolver(size: Int, mines: List[(Int, Int)]) {
 
   override def toString(): String = {
     val sb = new StringBuilder()
-    sb.append(size)
+    sb.append(lines)
     sb.append(" ")
-    sb.append(size)
+    sb.append(columns)
     sb.append("\n")
-    for (line <- Range(0, size)) {
-      for (column <- Range(0, size)) {
+    for (line <- Range(0, lines)) {
+      for (column <- Range(0, columns)) {
         if (mines.contains((line, column))) {
           sb.append("*")
         } else {
           sb.append(".")
         }
-        if ((column == size - 1) && (line != size - 1)) {
+        if ((column == columns - 1) && (line != lines - 1)) {
           sb.append("\n")
         }
       }

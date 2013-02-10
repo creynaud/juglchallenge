@@ -14,13 +14,21 @@ import controllers._
 class MineSweeperSolverSpec extends Specification {
 
   "MineSweeperSolver" should {
-    "parse a string" in {
+    "parse a 4x4 string" in {
       val solver: MineSweeperSolver = MineSweeperSolver.parse("4 4\n*...\n....\n.*..\n....")
       solver.toString() must equalTo("4 4\n*...\n....\n.*..\n....")
     }
-    "solve" in {
+    "solve it" in {
       val solver: MineSweeperSolver = MineSweeperSolver.parse("4 4\n*...\n....\n.*..\n....")
       solver.solution() must equalTo("*100\n2210\n1*10\n1110")
+    }
+    "parse a 3x5 string" in {
+      val solver: MineSweeperSolver = MineSweeperSolver.parse("3 5\n**...\n.....\n.*...")
+      solver.toString() must equalTo("3 5\n**...\n.....\n.*...")
+    }
+    "solve it" in {
+      val solver: MineSweeperSolver = MineSweeperSolver.parse("3 5\n**...\n.....\n.*...")
+      solver.solution() must equalTo("**100\n33200\n1*100")
     }
   }
 }
