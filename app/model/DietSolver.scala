@@ -6,17 +6,17 @@ import collection.mutable.ListBuffer
 class DietSolver(activities: List[Activity]) {
 
   def solution(): Set[Activity] = {
-    var n: Int = 0
-    var p: Int = 0
+    var sumAllNegatives: Int = 0
+    var sumAllPositives: Int = 0
     for (activity <- activities) {
       if (activity.value > 0) {
-        p += activity.value
+        sumAllPositives += activity.value
       } else {
-        n += activity.value
+        sumAllNegatives += activity.value
       }
     }
     val solution: mutable.Map[(Int, Int), ListBuffer[Int]] = mutable.Map[(Int, Int), ListBuffer[Int]]()
-    solve(n, p, activities.length -1, 0, solution)
+    solve(sumAllNegatives, sumAllPositives, activities.length - 1, 0, solution)
     val solutionIndexesList: Option[ListBuffer[Int]] = solution.get(activities.length - 1, 0)
     val result: mutable.Set[Activity] = mutable.Set[Activity]()
     for (index <- solutionIndexesList.get) {
@@ -36,11 +36,11 @@ class DietSolver(activities: List[Activity]) {
   }
 
   // http://en.wikipedia.org/wiki/Subset_sum_problem#Pseudo-polynomial_time_dynamic_programming_solution
-  def solve(n: Int, p: Int, index: Int, sum: Int, solution: mutable.Map[(Int, Int), ListBuffer[Int]]) {
+  def solve(sumAllNegatives: Int, sumAllPositives: Int, index: Int, sum: Int, solution: mutable.Map[(Int, Int), ListBuffer[Int]]) {
     solution.put((index, sum), ListBuffer[Int]())
-    if (sum < n) {
+    if (sum < sumAllNegatives) {
       return
-    } else if (sum > p) {
+    } else if (sum > sumAllPositives) {
       return
     }
     if (index == 0) {
@@ -48,28 +48,28 @@ class DietSolver(activities: List[Activity]) {
         solution.put((index, sum), ListBuffer[Int](0))
       }
     } else {
-      val existingSolutionOption: Option[ListBuffer[Int]] = solution.get((index - 1, sum))
-      existingSolutionOption match {
-        case None => solve(n, p, index - 1, sum, solution)
+      val existingSolutionIndexMinus1Sum: Option[ListBuffer[Int]] = solution.get((index - 1, sum))
+      existingSolutionIndexMinus1Sum match {
+        case None => solve(sumAllNegatives, sumAllPositives, index - 1, sum, solution)
         case _ =>
       }
-      val otherExistingSolutionOption: Option[ListBuffer[Int]] = solution.get((index - 1, sum - activities(index).value))
-      otherExistingSolutionOption match {
-        case None => solve(n, p, index - 1, sum - activities(index).value, solution)
+      val existingSolutionIndexMinus1SumMinusValue: Option[ListBuffer[Int]] = solution.get((index - 1, sum - activities(index).value))
+      existingSolutionIndexMinus1SumMinusValue match {
+        case None => solve(sumAllNegatives, sumAllPositives, index - 1, sum - activities(index).value, solution)
         case _ =>
       }
 
-      val solutionForIndexMinus1: ListBuffer[Int] = solution.get((index - 1, sum)).get
-      if (solutionForIndexMinus1.length > 0) {
-        solution.put((index, sum), solutionForIndexMinus1)
+      val solutionIndexMinus1Sum: ListBuffer[Int] = solution.get((index - 1, sum)).get
+      if (solutionIndexMinus1Sum.length > 0) {
+        solution.put((index, sum), solutionIndexMinus1Sum)
       }
       if (activities(index).value == sum) {
         solution.put((index, sum), ListBuffer[Int](index))
       }
-      val solutionForIndexMinus1SumMinusValue: ListBuffer[Int] = solution.get((index - 1, sum - activities(index).value)).get
-      if (solutionForIndexMinus1SumMinusValue.length > 0) {
-        solutionForIndexMinus1SumMinusValue += index
-        solution.put((index, sum), solutionForIndexMinus1SumMinusValue)
+      val solutionIndexMinus1SumMinusValue: ListBuffer[Int] = solution.get((index - 1, sum - activities(index).value)).get
+      if (solutionIndexMinus1SumMinusValue.length > 0) {
+        solutionIndexMinus1SumMinusValue += index
+        solution.put((index, sum), solutionIndexMinus1SumMinusValue)
       }
     }
   }
