@@ -35,13 +35,22 @@ class ApplicationSpec extends Specification {
         val json: String = "[{ \"name\" : \"coca-light\", \"value\" : 1 },{ \"name\" : \"croissant\", \"value\" : 180 },{ \"name\" : \"au-travail-a-velo\", \"value\" : -113 },{ \"name\" : \"guitar-hero\", \"value\" : -181 }]"
         val solver = route(FakeRequest(POST, "/diet/resolve").withJsonBody(Json.parse(json))).get
 
-        println(contentAsString(solver))
         status(solver) must equalTo(OK)
         contentType(solver) must beSome.which(_ == "application/json")
         contentAsString(solver) must contain("croissant")
         contentAsString(solver) must contain("coca-light")
         contentAsString(solver) must contain("guitar-hero")
         contentAsString(solver) must not contain("au-travail-a-velo")
+      }
+    }
+    "no solution to the diet problem on POST /diet/resolve" in {
+      running(FakeApplication()) {
+        val json: String = "[{ \"name\" : \"coca-light\", \"value\" : 1 },{ \"name\" : \"croissant\", \"value\" : 180 },{ \"name\" : \"guitar-hero\", \"value\" : 181 }]"
+        val solver = route(FakeRequest(POST, "/diet/resolve").withJsonBody(Json.parse(json))).get
+
+        status(solver) must equalTo(OK)
+        contentType(solver) must beSome.which(_ == "application/json")
+        contentAsString(solver) must contain("no solution")
       }
     }
   }

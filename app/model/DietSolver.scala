@@ -9,12 +9,17 @@ class DietSolver(activities: List[Activity]) {
     val canBeSolved: mutable.Map[(Int, Int), Boolean] = mutable.Map[(Int, Int), Boolean]()
     val solution: mutable.Map[(Int, Int), ListBuffer[Int]] = mutable.Map[(Int, Int), ListBuffer[Int]]()
     solve(activities.length -1, 0, canBeSolved, solution)
-    val solutionIndexesList: ListBuffer[Int] = solution.get(activities.length - 1, 0).get
-    val result: mutable.Set[Activity] = mutable.Set[Activity]()
-    for (index <- solutionIndexesList) {
-      result += activities(index)
+    val solutionIndexesList: Option[ListBuffer[Int]] = solution.get(activities.length - 1, 0)
+    solutionIndexesList match {
+      case Some(_) => {
+        val result: mutable.Set[Activity] = mutable.Set[Activity]()
+        for (index <- solutionIndexesList.get) {
+          result += activities(index)
+        }
+        return result.toSet
+      }
+      case _ => return Set()
     }
-    return result.toSet
   }
 
   override def toString(): String = {

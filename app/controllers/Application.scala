@@ -55,7 +55,11 @@ object Application extends Controller {
       val result: JsResult[List[Activity]] = request.body.validate[List[Activity]]
       val solver: DietSolver = new DietSolver(result.get)
       val solution: Set[Activity] = solver.solution()
-      Ok(Json.toJson(solution.toList))
+      if (solution.size == 0) {
+        Ok(Json.toJson(JsString("[\"no solution\"]")))
+      } else {
+        Ok(Json.toJson(solution.toList))
+      }
   }
 
 }
