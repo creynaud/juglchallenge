@@ -10,3 +10,4 @@ GET     /enonce                     controllers.Application.getMarkdown
 POST    /minesweeper/resolve        controllers.Application.solveMineSweeper
 
 POST    /diet/resolve               controllers.Application.solveDiet
+GET     /activities                 controllers.Application.activities
