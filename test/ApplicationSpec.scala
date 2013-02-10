@@ -45,7 +45,7 @@ class ApplicationSpec extends Specification {
     }
     "no solution to the diet problem on POST /diet/resolve" in {
       running(FakeApplication()) {
-        val json: String = "[{ \"name\" : \"coca-light\", \"value\" : 1 },{ \"name\" : \"croissant\", \"value\" : 180 },{ \"name\" : \"guitar-hero\", \"value\" : 181 }]"
+        val json: String = "[{\"name\":\"coca-light\",\"value\":1},{\"name\":\"coca\",\"value\":138},{\"name\":\"au-travail-a-velo\",\"value\":-113},{\"name\":\"guitar-hero\",\"value\":-181}]"
         val solver = route(FakeRequest(POST, "/diet/resolve").withJsonBody(Json.parse(json))).get
 
         status(solver) must equalTo(OK)
