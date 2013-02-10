@@ -3,10 +3,8 @@ package controllers
 import play.api.mvc._
 import java.io._
 import io.Source
-import play.api._
 import model.{DietSolver, Activity, MineSweeperSolver}
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 object Application extends Controller {
 
