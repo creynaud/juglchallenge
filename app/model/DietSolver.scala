@@ -53,37 +53,37 @@ class DietSolver(activities: List[Activity]) {
         solution.put((0, sum), Set[Int]())
       }
     } else {
+      if (activities(index).value == sum) {
+        solution.put((index, sum), Set[Int](index))
+        return
+      }
+
       val existingSolutionIndexMinus1Sum: Option[Set[Int]] = solution.get((index - 1, sum))
       existingSolutionIndexMinus1Sum match {
         case None => solve(sumAllNegatives, sumAllPositives, index - 1, sum, solution)
         case _ =>
       }
+      val solutionIndexMinus1Sum: Set[Int] = solution.get((index - 1, sum)).get
+      if (solutionIndexMinus1Sum.size > 0) {
+        solution.put((index, sum), solutionIndexMinus1Sum.toSet)
+        return
+      }
+
       val existingSolutionIndexMinus1SumMinusValue: Option[Set[Int]] = solution.get((index - 1, sum - activities(index).value))
       existingSolutionIndexMinus1SumMinusValue match {
         case None => solve(sumAllNegatives, sumAllPositives, index - 1, sum - activities(index).value, solution)
         case _ =>
       }
-
-      val solutionIndexMinus1Sum: Set[Int] = solution.get((index - 1, sum)).get
-      if (solutionIndexMinus1Sum.size > 0) {
-        solution.put((index, sum), solutionIndexMinus1Sum.toSet)
-      }
-      if (activities(index).value == sum) {
-        solution.put((index, sum), Set[Int](index))
-      }
       val solutionIndexMinus1SumMinusValue: Set[Int] = solution.get((index - 1, sum - activities(index).value)).get
       if (solutionIndexMinus1SumMinusValue.size > 0) {
-        val mute: mutable.Set[Int] = mutable.Set[Int]()
-        mute += index
-        mute ++= solutionIndexMinus1SumMinusValue
-        solution.put((index, sum), mute.toSet)
+        val solutionIndexSumMinusValue: mutable.Set[Int] = mutable.Set[Int]()
+        solutionIndexSumMinusValue += index
+        solutionIndexSumMinusValue ++= solutionIndexMinus1SumMinusValue
+        solution.put((index, sum), solutionIndexSumMinusValue.toSet)
+        return
       }
 
-      val existingSolutionIndexSum: Option[Set[Int]] = solution.get((index, sum))
-      existingSolutionIndexSum match {
-        case None => solution.put((index, sum), Set[Int]())
-        case _ =>
-      }
+      solution.put((index, sum), Set[Int]())
     }
   }
 }

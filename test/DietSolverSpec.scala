@@ -28,19 +28,23 @@ class DietSolverSpec extends Specification {
       activitiesListBuffer += new Activity("coca-light", 1)
       val ga = new Activity("ga", 1)
       activitiesListBuffer += ga
-      activitiesListBuffer += new Activity("bu", 42)
-      activitiesListBuffer += new Activity("zo", 3)
-      activitiesListBuffer += new Activity("meuh", -112)
+      val bu = new Activity("bu", 42)
+      activitiesListBuffer += bu
+      val zo = new Activity("zo", 3)
+      activitiesListBuffer += zo
+      val meuh = new Activity("meuh", -112)
+      activitiesListBuffer += meuh
       val croissant = new Activity("croissant", 180)
       activitiesListBuffer += croissant
       activitiesListBuffer += new Activity("kinder", 212)
       activitiesListBuffer += new Activity("burger", 612)
-      activitiesListBuffer += new Activity("au-travail-a-velo", -113)
+      val travailAVelo = new Activity("au-travail-a-velo", -113)
+      activitiesListBuffer += travailAVelo
       activitiesListBuffer += new Activity("standing-desk", -400)
       val guitarHero = new Activity("guitar-hero", -181)
       activitiesListBuffer += guitarHero
       val solver: DietSolver = new DietSolver(activitiesListBuffer.toList)
-      solver.solution() must equalTo(Set(ga, croissant, guitarHero))
+      solver.solution() must equalTo(Set(travailAVelo, croissant, bu, zo, meuh))
     }
     "Find no solution" in {
       val activitiesListBuffer = mutable.ListBuffer[Activity]()
