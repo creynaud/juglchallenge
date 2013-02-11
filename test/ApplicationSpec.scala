@@ -12,9 +12,9 @@ import play.api.libs.json._
 class ApplicationSpec extends Specification {
 
   "Application" should {
-    "return OUI for /?q=As+tu+bien+recu+le+deuxieme+enonce(OUI/NON)" in {
+    "return OUI for /?q=As+tu+trouve+le+dernier+exercice+difficile(OUI/NON)" in {
       running(FakeApplication()) {
-        val home = route(FakeRequest(GET, "/?q=As+tu+bien+recu+le+deuxieme+enonce(OUI/NON)")).get
+        val home = route(FakeRequest(GET, "/?q=As+tu+trouve+le+dernier+exercice+difficile(OUI/NON)")).get
 
         status(home) must equalTo(OK)
         contentType(home) must beSome.which(_ == "text/plain")

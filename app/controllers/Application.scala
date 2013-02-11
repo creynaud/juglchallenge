@@ -10,7 +10,7 @@ object Application extends Controller {
 
   def email(q: Option[String]) = Action {
     q match {
-      case Some("As tu bien recu le deuxieme enonce(OUI/NON)") => Ok("OUI")
+      case Some("As tu trouve le dernier exercice difficile(OUI/NON)") => Ok("OUI")
       case Some("Es tu pret a recevoir une enonce au format markdown par http post(OUI/NON)") => Ok("OUI")
       case _ => Ok("C'est pas faux")
     }
