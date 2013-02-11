@@ -10,7 +10,7 @@ import collection.mutable
 class DietSolverSpec extends Specification {
 
   "DietSolver" should {
-    "Find a solution" in {
+    "Find a solution in a small set of activies" in {
       val cocaLight = new Activity("coca-light", 1)
       val croissant = new Activity("croissant", 180)
       val travailAVelo = new Activity("au-travail-a-velo", -113)
@@ -23,7 +23,7 @@ class DietSolverSpec extends Specification {
       val solver: DietSolver = new DietSolver(activitiesListBuffer.toList)
       solver.solution() must equalTo(Set(cocaLight, croissant, guitarHero))
     }
-    "Find a solution" in {
+    "Find a solution in a bigger set of activities" in {
       val activitiesListBuffer = mutable.ListBuffer[Activity]()
       activitiesListBuffer += new Activity("coca-light", 1)
       val ga = new Activity("ga", 1)
@@ -46,7 +46,7 @@ class DietSolverSpec extends Specification {
       val solver: DietSolver = new DietSolver(activitiesListBuffer.toList)
       solver.solution() must equalTo(Set(travailAVelo, croissant, bu, zo, meuh))
     }
-    "Find no solution" in {
+    "Find no solution in a set of activities" in {
       val activitiesListBuffer = mutable.ListBuffer[Activity]()
       activitiesListBuffer += new Activity("coca-light", 1)
       activitiesListBuffer += new Activity("ga", 1)

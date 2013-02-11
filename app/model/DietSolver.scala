@@ -5,26 +5,86 @@ import collection.mutable
 class DietSolver(activities: List[Activity]) {
 
   def solution(): Set[Activity] = {
-    var sumAllNegatives: Int = 0
-    var sumAllPositives: Int = 0
+    var addNegativesSum: Int = 0
+    var allPositivesSum: Int = 0
     for (activity <- activities) {
       if (activity.value > 0) {
-        sumAllPositives += activity.value
+        allPositivesSum += activity.value
       } else {
-        sumAllNegatives += activity.value
+        addNegativesSum += activity.value
       }
     }
-    val solution: mutable.Map[(Int, Int), Set[Int]] = mutable.Map[(Int, Int), Set[Int]]()
-    solve(sumAllNegatives, sumAllPositives, activities.length - 1, 0, solution)
-    val solutionIndexes: Option[Set[Int]] = solution.get(activities.length - 1, 0)
+    val solutionsMap: mutable.Map[(Int, Int), Set[Int]] = mutable.Map[(Int, Int), Set[Int]]()
+    solveSubsetSum(addNegativesSum, allPositivesSum, activities.length - 1, 0, solutionsMap)
+    val solutionIndexes: Option[Set[Int]] = solutionsMap.get(activities.length - 1, 0)
     val result: mutable.Set[Activity] = mutable.Set[Activity]()
     var checksum: Int = 0
     for (index <- solutionIndexes.get) {
       result += activities(index)
       checksum += activities(index).value
     }
-    assert (checksum == 0)
+    assert(checksum == 0)
     return result.toSet
+  }
+
+  // http://en.wikipedia.org/wiki/Subset_sum_problem#Pseudo-polynomial_time_dynamic_programming_solution
+  def solveSubsetSum(allNegativesSum: Int, allPositivesSum: Int, indexDefiningCurrentSet: Int, sum: Int, solutionsMap: mutable.Map[(Int, Int), Set[Int]]) {
+    // If sum is smaller than all the negatives, or greater than all the positives, there is no solution
+    if (sum < allNegativesSum) {
+      solutionsMap.put((indexDefiningCurrentSet, sum), Set[Int]())
+      return
+    } else if (sum > allPositivesSum) {
+      solutionsMap.put((indexDefiningCurrentSet, sum), Set[Int]())
+      return
+    }
+
+    // If current set contains only the 1st element, there is a solution if its value is sum
+    if (indexDefiningCurrentSet == 0) {
+      if (sum == activities(0).value) {
+        solutionsMap.put((0, sum), Set[Int](0))
+      } else {
+        solutionsMap.put((0, sum), Set[Int]())
+      }
+      return
+    }
+
+    // If current element's value is sum, the singleton set containing this element is a solution
+    if (activities(indexDefiningCurrentSet).value == sum) {
+      solutionsMap.put((indexDefiningCurrentSet, sum), Set[Int](indexDefiningCurrentSet))
+      return
+    }
+
+    // Let's find out if there is a solution for this set minus the last element and sum
+    val existingSolutionIndexMinus1Sum: Option[Set[Int]] = solutionsMap.get((indexDefiningCurrentSet - 1, sum))
+    existingSolutionIndexMinus1Sum match {
+      case None => solveSubsetSum(allNegativesSum, allPositivesSum, indexDefiningCurrentSet - 1, sum, solutionsMap)
+      case _ =>
+    }
+    // If there is a solution for this set minus the last element, it is also a solution for this set
+    val solutionIndexMinus1Sum: Set[Int] = solutionsMap.get((indexDefiningCurrentSet - 1, sum)).get
+    if (solutionIndexMinus1Sum.size > 0) {
+      solutionsMap.put((indexDefiningCurrentSet, sum), solutionIndexMinus1Sum.toSet)
+      return
+    }
+
+    // Let's find out if there is a solution for this set minus the last element and sum minus last element value
+    val existingSolutionIndexMinus1SumMinusValue: Option[Set[Int]] = solutionsMap.get((indexDefiningCurrentSet - 1, sum - activities(indexDefiningCurrentSet).value))
+    existingSolutionIndexMinus1SumMinusValue match {
+      case None => solveSubsetSum(allNegativesSum, allPositivesSum, indexDefiningCurrentSet - 1, sum - activities(indexDefiningCurrentSet).value, solutionsMap)
+      case _ =>
+    }
+    // If there is a solution for this set minus the last element, it is also a solution for this set
+    val solutionIndexMinus1SumMinusValue: Set[Int] = solutionsMap.get((indexDefiningCurrentSet - 1, sum - activities(indexDefiningCurrentSet).value)).get
+    if (solutionIndexMinus1SumMinusValue.size > 0) {
+      val solutionIndexSumMinusValue: mutable.Set[Int] = mutable.Set[Int]()
+      solutionIndexSumMinusValue += indexDefiningCurrentSet
+      solutionIndexSumMinusValue ++= solutionIndexMinus1SumMinusValue
+      solutionsMap.put((indexDefiningCurrentSet, sum), solutionIndexSumMinusValue.toSet)
+      return
+    }
+
+    // There is no solution
+    solutionsMap.put((indexDefiningCurrentSet, sum), Set[Int]())
   }
 
   override def toString(): String = {
@@ -35,55 +95,5 @@ class DietSolver(activities: List[Activity]) {
       sb.append("\n")
     }
     return sb.mkString
-  }
-
-  // http://en.wikipedia.org/wiki/Subset_sum_problem#Pseudo-polynomial_time_dynamic_programming_solution
-  def solve(sumAllNegatives: Int, sumAllPositives: Int, index: Int, sum: Int, solution: mutable.Map[(Int, Int), Set[Int]]) {
-    if (sum < sumAllNegatives) {
-      solution.put((index, sum), Set[Int]())
-      return
-    } else if (sum > sumAllPositives) {
-      solution.put((index, sum), Set[Int]())
-      return
-    }
-    if (index == 0) {
-      if (sum == activities(0).value) {
-        solution.put((0, sum), Set[Int](0))
-      } else {
-        solution.put((0, sum), Set[Int]())
-      }
-    } else {
-      if (activities(index).value == sum) {
-        solution.put((index, sum), Set[Int](index))
-        return
-      }
-
-      val existingSolutionIndexMinus1Sum: Option[Set[Int]] = solution.get((index - 1, sum))
-      existingSolutionIndexMinus1Sum match {
-        case None => solve(sumAllNegatives, sumAllPositives, index - 1, sum, solution)
-        case _ =>
-      }
-      val solutionIndexMinus1Sum: Set[Int] = solution.get((index - 1, sum)).get
-      if (solutionIndexMinus1Sum.size > 0) {
-        solution.put((index, sum), solutionIndexMinus1Sum.toSet)
-        return
-      }
-
-      val existingSolutionIndexMinus1SumMinusValue: Option[Set[Int]] = solution.get((index - 1, sum - activities(index).value))
-      existingSolutionIndexMinus1SumMinusValue match {
-        case None => solve(sumAllNegatives, sumAllPositives, index - 1, sum - activities(index).value, solution)
-        case _ =>
-      }
-      val solutionIndexMinus1SumMinusValue: Set[Int] = solution.get((index - 1, sum - activities(index).value)).get
-      if (solutionIndexMinus1SumMinusValue.size > 0) {
-        val solutionIndexSumMinusValue: mutable.Set[Int] = mutable.Set[Int]()
-        solutionIndexSumMinusValue += index
-        solutionIndexSumMinusValue ++= solutionIndexMinus1SumMinusValue
-        solution.put((index, sum), solutionIndexSumMinusValue.toSet)
-        return
-      }
-
-      solution.put((index, sum), Set[Int]())
-    }
   }
 }

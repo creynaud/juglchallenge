@@ -6,18 +6,18 @@ object MineSweeperSolver {
   def parse(text: String): MineSweeperSolver = {
     val minesListBuffer = ListBuffer[(Int, Int)]()
     var currentLine: Int = 0
-    var lines = 0
-    var columns = 0
+    var lines: Int = 0
+    var columns: Int = 0
     for (line <- text.split("[\\n-\\r]+")) {
       if (line.contains(".") || line.contains("*")) {
-        var currentChar: Int = 0
+        var currentColumn: Int = 0
         for (c <- line) {
           if (c == '*') {
-            minesListBuffer += ((currentLine, currentChar))
+            minesListBuffer += ((currentLine, currentColumn))
           }
-          currentChar = currentChar + 1
+          currentColumn += 1
         }
-        currentLine = currentLine + 1
+        currentLine += 1
       } else {
         val sizes = line.split("\\s+")
         for (sizeString <- sizes) {

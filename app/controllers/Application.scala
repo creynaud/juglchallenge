@@ -8,11 +8,11 @@ import play.api.libs.json._
 
 object Application extends Controller {
 
-  def email(q: Option[String]) = Action {
+  def questions(q: Option[String]) = Action {
     q match {
       case Some("Veux tu tenter ta chance pour gagner un des prix(reserve aux membres du JUGL)(OUI/NON)") => Ok("OUI")
       case Some("Es tu pret a recevoir une enonce au format markdown par http post(OUI/NON)") => Ok("OUI")
-      case _ => Ok("C'est pas faux")
+      case _ => Ok("Hello, je suis le serveur de Claire pour le Challenge du JUGL !")
     }
   }
 
@@ -52,24 +52,14 @@ object Application extends Controller {
 
   def solveDiet = Action(parse.json) {
     request =>
-      val writer = new FileWriter(new File("/tmp/activities"))
-      writer.write(request.body.toString())
-      writer.close()
-      val result: JsResult[List[Activity]] = request.body.validate[List[Activity]]
-      val solver: DietSolver = new DietSolver(result.get)
+      val jsResult: JsResult[List[Activity]] = request.body.validate[List[Activity]]
+      val solver: DietSolver = new DietSolver(jsResult.get)
       val solution: Set[Activity] = solver.solution()
       if (solution.size == 0) {
         Ok(Json.toJson(Json.arr("no solution")))
       } else {
         Ok(Json.toJson(solution.toList))
       }
-  }
-
-  def activities = Action {
-    val source = Source.fromFile("/tmp/activities")(io.Codec("UTF-8"))
-    val lines = source.mkString
-    source.close()
-    Ok(lines)
   }
 
 }

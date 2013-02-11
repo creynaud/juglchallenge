@@ -30,7 +30,7 @@ class ApplicationSpec extends Specification {
         contentAsString(solver) must equalTo("*100\n2210\n1*10\n1110")
       }
     }
-    "solve the diet on POST /diet/resolve" in {
+    "solve the diet problem on POST /diet/resolve" in {
       running(FakeApplication()) {
         val json: String = "[{ \"name\" : \"coca-light\", \"value\" : 1 },{ \"name\" : \"croissant\", \"value\" : 180 },{ \"name\" : \"au-travail-a-velo\", \"value\" : -113 },{ \"name\" : \"guitar-hero\", \"value\" : -181 }]"
         val solver = route(FakeRequest(POST, "/diet/resolve").withJsonBody(Json.parse(json))).get
